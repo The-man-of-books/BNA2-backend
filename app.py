@@ -39,46 +39,13 @@ def dashboard():
         cars = json.load(f)
     return render_template('dashboard.html', cars=cars)
 
-# --- UPDATED /add_car route to match frontend form and fields ---
 @app.route('/add_car', methods=['POST'])
 def add_car():
     if not session.get('logged_in'):
         return jsonify({'error': 'Unauthorized'}), 403
 
-    if request.is_json:
-        data = request.get_json()
-    else:
-        # Match frontend inputs: year, make, description, price, image
-        data = {
-            'year': request.form.get('year'),
-            'make': request.form.get('make'),
-            'description': request.form.get('description'),
-            'price': request.form.get('price'),
-            'image': request.form.get('image')
-        }
-
-    with open('cars.json', 'r+') as file:
-        cars = json.load(file)
-        cars.append(data)
-        file.seek(0)
-        json.dump(cars, file, indent=2)
-
-    # Redirect back to dashboard if form submitted normally
-    if not request.is_json:
-        return redirect(url_for('dashboard'))
-
-    return jsonify({'message': 'Car added successfully!'}), 200
-
-@app.route('/logout')
-def logout():
-    session.pop('logged_in', None)
-    return redirect(url_for('home'))
-
-@app.route('/upload', methods=['POST'])
-def upload_image():
+    # Handle image upload
     image_file = request.files.get('imageFile')
-    image_url = request.form.get('imageUrl')
-
     if image_file and allowed_file(image_file.filename):
         filename = secure_filename(image_file.filename)
         timestamp = int(time.time())
@@ -86,13 +53,30 @@ def upload_image():
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         image_file.save(filepath)
         image_url = f"/uploads/{filename}"
-    elif image_url:
-        # External URL accepted as is
-        pass
     else:
-        return jsonify({'error': 'Invalid or no image provided'}), 400
+        return "Image upload failed or invalid image.", 400
 
-    return jsonify({'imageUrl': image_url})
+    # Save car info with image URL
+    data = {
+        'year': request.form.get('year'),
+        'make': request.form.get('make'),
+        'description': request.form.get('description'),
+        'price': request.form.get('price'),
+        'image': image_url
+    }
+
+    with open('cars.json', 'r+') as file:
+        cars = json.load(file)
+        cars.append(data)
+        file.seek(0)
+        json.dump(cars, file, indent=2)
+
+    return redirect(url_for('dashboard'))
+
+@app.route('/logout')
+def logout():
+    session.pop('logged_in', None)
+    return redirect(url_for('home'))
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
