@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="/static/admin.css">
+    <a href="/logout">Logout</a>
 </head>
 <body>
     <h2>Cars Listing</h2>
@@ -11,14 +13,57 @@
             <li>{{ car.name }} - {{ car.price }}</li>
         {% endfor %}
     </ul>
+
     <h2>Add New Car</h2>
-    <form id="carForm">
-        <input type="text" placeholder="Car Name" id="carName" required><br><br>
-        <input type="text" placeholder="Price" id="price" required><br><br>
-        <input type="text" placeholder="Image URL" id="image" required><br><br>
+    <form id="carForm" method="POST" action="/add_car">
+        <input type="text" placeholder="Car Name" id="carName" name="carName" required><br><br>
+        <input type="text" placeholder="Price" id="price" name="price" required><br><br>
+        <input type="text" placeholder="Image URL" id="image" name="image" required><br><br>
         <button type="submit">Add Car</button>
     </form>
 
+    <h2>Upload Image or Paste URL</h2>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <label>Paste Image URL:</label><br>
+        <input type="url" name="imageUrl" placeholder="https://example.com/image.jpg"><br><br>
+
+        <label>Or Upload Image:</label><br>
+        <input type="file" name="imageFile" accept="image/*"><br><br>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <div id="result" style="margin-top: 20px;"></div>
+
     <script src="/static/script.js"></script>
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+
+            const response = await fetch('/upload', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+            if (result.imageUrl) {
+                document.getElementById('result').innerHTML = `
+                    <p>Uploaded Image:</p>
+                    <img src="${result.imageUrl}" width="200">
+                    <p>URL: <a href="${result.imageUrl}" target="_blank">${result.imageUrl}</a></p>
+                `;
+
+                // Auto-fill image URL in Add Car form
+                document.getElementById('image').value = result.imageUrl;
+
+                // Auto-submit the Add Car form
+                document.getElementById('carForm').submit();
+
+            } else {
+                document.getElementById('result').textContent = 'Failed to upload image.';
+            }
+        });
+    </script>
 </body>
 </html>
