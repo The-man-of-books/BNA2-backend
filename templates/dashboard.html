@@ -71,12 +71,6 @@
             border-bottom: 1px solid #ccc;
             font-size: 1.1rem;
         }
-        #result img {
-            max-width: 100%;
-            border-radius: 8px;
-            margin-top: 10px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        }
         label {
             font-weight: 600;
             display: block;
@@ -94,53 +88,44 @@
     <nav>
         <button class="tab-btn active" data-tab="list">Cars Listing</button>
         <button class="tab-btn" data-tab="add">Add New Car</button>
-        <button class="tab-btn" data-tab="upload">Upload Image</button>
     </nav>
 
     <section id="list" class="active">
         <h2>Cars Listing</h2>
         <ul>
             {% for car in cars %}
-                <li>{{ car.name }} - {{ car.price }}</li>
+                <li>
+                    <strong>{{ car.year }} {{ car.make }}</strong> - {{ car.price }}
+                    <br>
+                    <img src="{{ car.image }}" alt="Car Image" style="max-width: 100%; margin-top: 8px; border-radius: 6px;">
+                </li>
             {% endfor %}
         </ul>
     </section>
 
     <section id="add">
         <h2>Add New Car</h2>
-        <form id="carForm" method="POST" action="/add_car">
-            <label for="image">Image URL</label>
-            <input type="text" placeholder="Image URL" id="image" name="image" required>
+        <form id="carForm" method="POST" action="/add_car" enctype="multipart/form-data">
+            <label for="imageFile">Upload Car Image</label>
+            <input type="file" id="imageFile" name="imageFile" accept="image/*" required>
 
-            <label for="carYearMake">Car Year and Make</label>
-            <input type="text" placeholder="e.g. 2016 Volkswagen Polo Vivo" id="carYearMake" name="carYearMake" required>
+            <label for="year">Car Year</label>
+            <input type="text" id="year" name="year" placeholder="e.g. 2016" required>
+
+            <label for="make">Car Make & Model</label>
+            <input type="text" id="make" name="make" placeholder="e.g. Volkswagen Polo Vivo" required>
 
             <label for="description">Description</label>
-            <textarea placeholder="Car details, specs, mileage, etc." id="description" name="description" required></textarea>
+            <textarea id="description" name="description" placeholder="Car details, specs, mileage, etc." required></textarea>
 
             <label for="price">Price</label>
-            <input type="text" placeholder="e.g. R 68,995" id="price" name="price" required>
+            <input type="text" id="price" name="price" placeholder="e.g. R 68,995" required>
 
             <button type="submit">Add Car</button>
         </form>
     </section>
 
-    <section id="upload">
-        <h2>Upload Image or Paste URL</h2>
-        <form id="uploadForm" enctype="multipart/form-data">
-            <label for="imageUrl">Paste Image URL</label>
-            <input type="url" name="imageUrl" id="imageUrl" placeholder="https://example.com/image.jpg">
-
-            <label for="imageFile">Or Upload Image</label>
-            <input type="file" name="imageFile" id="imageFile" accept="image/*">
-
-            <button type="submit">Submit</button>
-        </form>
-        <div id="result"></div>
-    </section>
-
     <script>
-        // Toggle Sections
         const buttons = document.querySelectorAll('.tab-btn');
         const sections = document.querySelectorAll('section');
         buttons.forEach(button => {
@@ -150,43 +135,6 @@
                 button.classList.add('active');
                 document.getElementById(button.dataset.tab).classList.add('active');
             });
-        });
-
-        // Upload Image Logic
-        document.getElementById('uploadForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const formData = new FormData(this);
-
-            const response = await fetch('/upload', {
-                method: 'POST',
-                body: formData
-            });
-
-            const result = await response.json();
-            const resultDiv = document.getElementById('result');
-
-            if (result.imageUrl) {
-                resultDiv.innerHTML = `
-                    <p>Uploaded Image:</p>
-                    <img src="${result.imageUrl}" alt="Uploaded Image Preview" />
-                    <p>URL: <a href="${result.imageUrl}" target="_blank">${result.imageUrl}</a></p>
-                `;
-
-                // Auto-fill image URL in Add Car form
-                document.getElementById('image').value = result.imageUrl;
-
-                // Switch to Add New Car tab for easy editing
-                buttons.forEach(btn => btn.classList.remove('active'));
-                sections.forEach(sec => sec.classList.remove('active'));
-                document.querySelector('button[data-tab="add"]').classList.add('active');
-                document.getElementById('add').classList.add('active');
-
-                // Optional: Focus the Car Year and Make input for faster entry
-                document.getElementById('carYearMake').focus();
-
-            } else {
-                resultDiv.textContent = 'Failed to upload image.';
-            }
         });
     </script>
 </body>
