@@ -1,104 +1,179 @@
-/* Admin Panel - BNA Motors Themed */
+/* admin.css */
+
+/* Base styles */
 body {
-  font-family: 'Arial', sans-serif;
-  background-color: #f5f5f5;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f6f8;
   color: #222;
-  padding: 20px;
   margin: 0;
+  padding: 20px;
 }
 
-h2 {
-  color: #b30000; /* Deep Red Accent */
+/* Header */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #e0e0e0;
+  padding-bottom: 10px;
   margin-bottom: 20px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
 }
 
-.admin-container {
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 25px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  max-width: 800px;
-  margin: 0 auto;
+header h1 {
+  font-weight: 700;
+  color: #0a3d62; /* Dark blue */
+  margin: 0;
+  font-size: 1.8rem;
 }
 
-.admin-form label {
-  font-weight: bold;
-  display: block;
-  margin-bottom: 8px;
-}
-
-.admin-form input,
-.admin-form textarea,
-.admin-form select {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  margin-bottom: 20px;
-  font-size: 14px;
-}
-
-.admin-form button {
-  background-color: #b30000;
-  color: #fff;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  transition: background 0.3s ease;
-}
-
-.admin-form button:hover {
-  background-color: #8a0000;
-}
-
-.table-container {
-  margin-top: 40px;
-}
-
-.admin-table {
-  width: 100%;
-  border-collapse: collapse;
-  background-color: #fff;
-}
-
-.admin-table th,
-.admin-table td {
-  padding: 15px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
-}
-
-.admin-table th {
-  background-color: #b30000;
-  color: #fff;
-  text-transform: uppercase;
-  font-size: 13px;
-}
-
-.admin-table tr:hover {
-  background-color: #f9f9f9;
-}
-
-.status-message {
-  padding: 10px;
+header a {
+  color: #c0392b; /* Red-ish logout */
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 6px 12px;
+  border: 1px solid transparent;
   border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+header a:hover {
+  border-color: #c0392b;
+  background-color: #fceae9;
+}
+
+/* Navigation buttons */
+nav {
   margin-bottom: 20px;
 }
 
-.status-message.success {
-  background-color: #d4edda;
-  color: #155724;
-  border: 1px solid #c3e6cb;
+nav button {
+  background-color: #0a3d62; /* Dark blue */
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  margin-right: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
 }
 
-.status-message.error {
-  background-color: #f8d7da;
-  color: #721c24;
-  border: 1px solid #f5c6cb;
+nav button:hover {
+  background-color: #084170; /* Slightly darker */
+}
+
+nav button.active {
+  background-color: #1e90ff; /* Bright blue active tab */
+}
+
+/* Sections */
+section {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.1);
+}
+
+/* Headings */
+section h2 {
+  margin-top: 0;
+  color: #0a3d62;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+/* Car Listing */
+ul {
+  list-style-type: none;
+  padding-left: 0;
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fafafa;
+}
+
+ul li {
+  padding: 10px 15px;
+  border-bottom: 1px solid #eee;
+  font-weight: 600;
+  color: #333;
+}
+
+ul li:last-child {
+  border-bottom: none;
+}
+
+/* Forms */
+form input[type="text"],
+form input[type="url"],
+form input[type="file"] {
+  width: 100%;
+  padding: 12px 10px;
+  margin-bottom: 15px;
+  border: 1px solid #bbb;
+  border-radius: 5px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+form input[type="text"]:focus,
+form input[type="url"]:focus,
+form input[type="file"]:focus {
+  outline: none;
+  border-color: #1e90ff;
+  box-shadow: 0 0 5px rgba(30,144,255,0.5);
+}
+
+form button {
+  background-color: #0a3d62;
+  color: #fff;
+  border: none;
+  padding: 12px 20px;
+  font-weight: 700;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: background-color 0.3s ease;
+  width: 100%;
+}
+
+form button:hover {
+  background-color: #084170;
+}
+
+/* Result box after upload */
+#result {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #e9f5ff;
+  border: 1px solid #1e90ff;
+  border-radius: 6px;
+  color: #0a3d62;
+  font-weight: 600;
+}
+
+#result img {
+  margin-top: 10px;
+  max-width: 100%;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  display: block;
+}
+
+/* Scrollbar for car list */
+ul::-webkit-scrollbar {
+  width: 8px;
+}
+
+ul::-webkit-scrollbar-thumb {
+  background-color: #1e90ff;
+  border-radius: 4px;
+}
+
+ul::-webkit-scrollbar-track {
+  background-color: #f4f6f8;
 }

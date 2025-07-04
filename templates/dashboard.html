@@ -4,39 +4,101 @@
     <meta charset="UTF-8">
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="/static/admin.css">
-    <a href="/logout">Logout</a>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f8f8f8;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        nav button {
+            margin-right: 10px;
+            padding: 8px 16px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        nav button.active {
+            background-color: #555;
+        }
+        section {
+            display: none;
+            margin-top: 20px;
+        }
+        section.active {
+            display: block;
+        }
+        form input, form button {
+            padding: 10px;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+        ul li {
+            padding: 5px 0;
+            border-bottom: 1px solid #ccc;
+        }
+    </style>
 </head>
 <body>
-    <h2>Cars Listing</h2>
-    <ul>
-        {% for car in cars %}
-            <li>{{ car.name }} - {{ car.price }}</li>
-        {% endfor %}
-    </ul>
+    <header>
+        <h1>Admin Dashboard</h1>
+        <a href="/logout" style="text-decoration:none;color:#c00;">Logout</a>
+    </header>
 
-    <h2>Add New Car</h2>
-    <form id="carForm" method="POST" action="/add_car">
-        <input type="text" placeholder="Car Name" id="carName" name="carName" required><br><br>
-        <input type="text" placeholder="Price" id="price" name="price" required><br><br>
-        <input type="text" placeholder="Image URL" id="image" name="image" required><br><br>
-        <button type="submit">Add Car</button>
-    </form>
+    <nav>
+        <button class="tab-btn active" data-tab="list">Cars Listing</button>
+        <button class="tab-btn" data-tab="add">Add New Car</button>
+        <button class="tab-btn" data-tab="upload">Upload Image</button>
+    </nav>
 
-    <h2>Upload Image or Paste URL</h2>
-    <form id="uploadForm" enctype="multipart/form-data">
-        <label>Paste Image URL:</label><br>
-        <input type="url" name="imageUrl" placeholder="https://example.com/image.jpg"><br><br>
+    <section id="list" class="active">
+        <h2>Cars Listing</h2>
+        <ul>
+            {% for car in cars %}
+                <li>{{ car.name }} - {{ car.price }}</li>
+            {% endfor %}
+        </ul>
+    </section>
 
-        <label>Or Upload Image:</label><br>
-        <input type="file" name="imageFile" accept="image/*"><br><br>
+    <section id="add">
+        <h2>Add New Car</h2>
+        <form id="carForm" method="POST" action="/add_car">
+            <input type="text" placeholder="Car Name" id="carName" name="carName" required>
+            <input type="text" placeholder="Price" id="price" name="price" required>
+            <input type="text" placeholder="Image URL" id="image" name="image" required>
+            <button type="submit">Add Car</button>
+        </form>
+    </section>
 
-        <button type="submit">Submit</button>
-    </form>
+    <section id="upload">
+        <h2>Upload Image or Paste URL</h2>
+        <form id="uploadForm" enctype="multipart/form-data">
+            <input type="url" name="imageUrl" placeholder="Paste Image URL">
+            <input type="file" name="imageFile" accept="image/*">
+            <button type="submit">Submit</button>
+        </form>
+        <div id="result"></div>
+    </section>
 
-    <div id="result" style="margin-top: 20px;"></div>
-
-    <script src="/static/script.js"></script>
     <script>
+        // Toggle Sections
+        const buttons = document.querySelectorAll('.tab-btn');
+        const sections = document.querySelectorAll('section');
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                buttons.forEach(btn => btn.classList.remove('active'));
+                sections.forEach(sec => sec.classList.remove('active'));
+                button.classList.add('active');
+                document.getElementById(button.dataset.tab).classList.add('active');
+            });
+        });
+
+        // Upload Image Logic (Same as yours)
         document.getElementById('uploadForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const formData = new FormData(this);
@@ -54,12 +116,8 @@
                     <p>URL: <a href="${result.imageUrl}" target="_blank">${result.imageUrl}</a></p>
                 `;
 
-                // Auto-fill image URL in Add Car form
                 document.getElementById('image').value = result.imageUrl;
-
-                // Auto-submit the Add Car form
                 document.getElementById('carForm').submit();
-
             } else {
                 document.getElementById('result').textContent = 'Failed to upload image.';
             }
