@@ -22,32 +22,73 @@
             color: #fff;
             border: none;
             cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
         }
         nav button.active {
-            background-color: #555;
+            background-color: #c0392b;
         }
         section {
             display: none;
             margin-top: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
         }
         section.active {
             display: block;
         }
-        form input, form button {
+        form input, form textarea, form button {
             padding: 10px;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             width: 100%;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        form textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        form button {
+            background-color: #c0392b;
+            color: white;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        form button:hover {
+            background-color: #a83227;
         }
         ul li {
-            padding: 5px 0;
+            padding: 10px 0;
             border-bottom: 1px solid #ccc;
+            font-size: 1.1rem;
+        }
+        #result img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-top: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 6px;
+            margin-top: 12px;
         }
     </style>
 </head>
 <body>
     <header>
         <h1>Admin Dashboard</h1>
-        <a href="/logout" style="text-decoration:none;color:#c00;">Logout</a>
+        <a href="/logout" style="text-decoration:none;color:#c00; font-weight: bold;">Logout</a>
     </header>
 
     <nav>
@@ -68,9 +109,18 @@
     <section id="add">
         <h2>Add New Car</h2>
         <form id="carForm" method="POST" action="/add_car">
-            <input type="text" placeholder="Car Name" id="carName" name="carName" required>
-            <input type="text" placeholder="Price" id="price" name="price" required>
+            <label for="image">Image URL</label>
             <input type="text" placeholder="Image URL" id="image" name="image" required>
+
+            <label for="carYearMake">Car Year and Make</label>
+            <input type="text" placeholder="e.g. 2016 Volkswagen Polo Vivo" id="carYearMake" name="carYearMake" required>
+
+            <label for="description">Description</label>
+            <textarea placeholder="Car details, specs, mileage, etc." id="description" name="description" required></textarea>
+
+            <label for="price">Price</label>
+            <input type="text" placeholder="e.g. R 68,995" id="price" name="price" required>
+
             <button type="submit">Add Car</button>
         </form>
     </section>
@@ -78,8 +128,12 @@
     <section id="upload">
         <h2>Upload Image or Paste URL</h2>
         <form id="uploadForm" enctype="multipart/form-data">
-            <input type="url" name="imageUrl" placeholder="Paste Image URL">
-            <input type="file" name="imageFile" accept="image/*">
+            <label for="imageUrl">Paste Image URL</label>
+            <input type="url" name="imageUrl" id="imageUrl" placeholder="https://example.com/image.jpg">
+
+            <label for="imageFile">Or Upload Image</label>
+            <input type="file" name="imageFile" id="imageFile" accept="image/*">
+
             <button type="submit">Submit</button>
         </form>
         <div id="result"></div>
@@ -98,7 +152,7 @@
             });
         });
 
-        // Upload Image Logic (Same as yours)
+        // Upload Image Logic
         document.getElementById('uploadForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const formData = new FormData(this);
@@ -109,17 +163,29 @@
             });
 
             const result = await response.json();
+            const resultDiv = document.getElementById('result');
+
             if (result.imageUrl) {
-                document.getElementById('result').innerHTML = `
+                resultDiv.innerHTML = `
                     <p>Uploaded Image:</p>
-                    <img src="${result.imageUrl}" width="200">
+                    <img src="${result.imageUrl}" alt="Uploaded Image Preview" />
                     <p>URL: <a href="${result.imageUrl}" target="_blank">${result.imageUrl}</a></p>
                 `;
 
+                // Auto-fill image URL in Add Car form
                 document.getElementById('image').value = result.imageUrl;
-                document.getElementById('carForm').submit();
+
+                // Switch to Add New Car tab for easy editing
+                buttons.forEach(btn => btn.classList.remove('active'));
+                sections.forEach(sec => sec.classList.remove('active'));
+                document.querySelector('button[data-tab="add"]').classList.add('active');
+                document.getElementById('add').classList.add('active');
+
+                // Optional: Focus the Car Year and Make input for faster entry
+                document.getElementById('carYearMake').focus();
+
             } else {
-                document.getElementById('result').textContent = 'Failed to upload image.';
+                resultDiv.textContent = 'Failed to upload image.';
             }
         });
     </script>
