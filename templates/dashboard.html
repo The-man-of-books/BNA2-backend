@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="/static/admin.css">
+</head>
+<body>
+    <h2>Cars Listing</h2>
+    <ul>
+        {% for car in cars %}
+            <li>{{ car.name }} - {{ car.price }}</li>
+        {% endfor %}
+    </ul>
+    <h2>Add New Car</h2>
+    <form id="carForm">
+        <input type="text" placeholder="Car Name" id="carName" required><br><br>
+        <input type="text" placeholder="Price" id="price" required><br><br>
+        <input type="text" placeholder="Image URL" id="image" required><br><br>
+        <button type="submit">Add Car</button>
+    </form>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
