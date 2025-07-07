@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Admin Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - BNA2</title>
     <link rel="stylesheet" href="/static/admin.css">
     <style>
         body {
@@ -77,6 +78,26 @@
             margin-bottom: 6px;
             margin-top: 12px;
         }
+        .car-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .car-item {
+            background: white;
+            padding: 20px;
+            margin: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 200px;
+        }
+        img {
+            width: 100%;
+            border-radius: 8px;
+        }
+        h3 {
+            color: #003366;
+        }
     </style>
 </head>
 <body>
@@ -90,19 +111,22 @@
         <button class="tab-btn" data-tab="add">Add New Car</button>
     </nav>
 
+    <!-- Cars Listing Section -->
     <section id="list" class="active">
         <h2>Cars Listing</h2>
-        <ul>
+        <div class="car-list">
             {% for car in cars %}
-                <li>
-                    <strong>{{ car.year }} {{ car.make }}</strong> - {{ car.price }}
-                    <br>
-                    <img src="{{ car.image }}" alt="Car Image" style="max-width: 100%; margin-top: 8px; border-radius: 6px;">
-                </li>
+                <div class="car-item">
+                    <img src="{{ car.image }}" alt="{{ car.make }}">
+                    <h3>{{ car.make }} ({{ car.year }})</h3>
+                    <p>{{ car.description }}</p>
+                    <p><strong>Price:</strong> R {{ car.price }}</p>
+                </div>
             {% endfor %}
-        </ul>
+        </div>
     </section>
 
+    <!-- Add New Car Section -->
     <section id="add">
         <h2>Add New Car</h2>
         <form id="carForm" method="POST" action="/add_car" enctype="multipart/form-data">

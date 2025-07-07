@@ -1,1 +1,16 @@
-[]
+[
+  {
+    "year": "2016",
+    "make": "Volkswagen Polo Vivo",
+    "description": "A well-maintained Volkswagen Polo Vivo with low mileage.",
+    "price": "R 68,995",
+    "image": "/uploads/1629818753_car1.jpg"
+  },
+  {
+    "year": "2018",
+    "make": "Toyota Corolla",
+    "description": "A reliable Toyota Corolla with all service records.",
+    "price": "R 169,000",
+    "image": "/uploads/1629818783_car2.jpg"
+  }
+]

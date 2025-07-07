@@ -1,1 +1,58 @@
-<!-- Optional if you want a separate page for adding cars -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Car - Admin</title>
+    <p><a href="/dashboard">← Back to Dashboard</a></p>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding-top: 50px;
+        }
+        .form-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        h2 {
+            color: #003366;
+        }
+        input, textarea, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #003366;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #00509e;
+        }
+    </style>
+</head>
+<body>
+    <h2>Add a New Car</h2>
+    <div class="form-container">
+        <form action="/add_car" method="POST" enctype="multipart/form-data">
+            <input type="text" name="make" placeholder="Car Make" required>
+            <input type="text" name="year" placeholder="Year" required>
+            <textarea name="description" placeholder="Car Description" required></textarea>
+            <input type="text" name="price" placeholder="Price" required>
+            <input type="file" name="imageFile" accept="image/*" required>
+            <button type="submit">Add Car</button>
+        </form>
+    </div>
+</body>
+</html>

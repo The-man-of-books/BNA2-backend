@@ -1,10 +1,86 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Home Page</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Car Listings</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <h1>Welcome to BNA2</h1>
-    <a href="/admin-login">Admin Login</a>
+  <h1>Car Listings</h1>
+
+  <!-- Display Cars -->
+  <div id="car-list"></div>
+
+  <hr>
+
+  <!-- Admin Form -->
+  <h2>Add a Car</h2>
+  <form id="car-form" enctype="multipart/form-data">
+    <label for="title">Car Title:</label>
+    <input type="text" id="title" name="title" required><br>
+
+    <label for="desc">Car Description:</label>
+    <textarea id="desc" name="desc" required></textarea><br>
+
+    <label for="price">Car Price:</label>
+    <input type="text" id="price" name="price" required><br>
+
+    <label for="imageFile">Car Image:</label>
+    <input type="file" id="imageFile" name="imageFile" accept="image/*" required><br>
+
+    <button type="submit">Add Car</button>
+  </form>
+
+  <script>
+    // Fetch cars from the backend and display them
+    function fetchCars() {
+      $.get("/cars", { file: "cars.json" }, function (data) {
+        $('#car-list').empty();
+        data.forEach(function(car) {
+          $('#car-list').append(`
+            <div class="car">
+              <h3>${car.make || car.title}</h3>
+              <p>${car.description || car.desc}</p>
+              <p><strong>Price:</strong> ${car.price}</p>
+              <img src="${car.image}" alt="${car.make || car.title}" width="200">
+            </div>
+          `);
+        });
+      });
+    }
+
+    // Handle the form submission to add a new car
+    document.getElementById('car-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData();
+      formData.append('make', document.getElementById('title').value); // 'make' = title
+      formData.append('description', document.getElementById('desc').value);
+      formData.append('price', document.getElementById('price').value);
+      formData.append('imageFile', document.getElementById('imageFile').files[0]);
+
+      try {
+        const response = await fetch('/add_car', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to add car');
+        }
+
+        alert('✅ Car added successfully!');
+        fetchCars(); // Refresh list
+        document.getElementById('car-form').reset(); // Clear form
+      } catch (err) {
+        console.error(err);
+        alert('❌ Error adding car: ' + err.message);
+      }
+    });
+
+    // Load cars on page load
+    fetchCars();
+  </script>
 </body>
 </html>
